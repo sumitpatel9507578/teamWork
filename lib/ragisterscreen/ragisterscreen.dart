@@ -177,7 +177,7 @@ class _RegisterscreenState extends State<Registerscreen> {
                 controller: _emailController,
                 label: "Email Address",
                 hint: "Enter your Email",
-                icon: Icons.alternate_email_rounded,
+                icon: Icons.email,
                 errorText: _emailError,
                 keyboardType: TextInputType.emailAddress,
               ),
