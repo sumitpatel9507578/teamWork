@@ -1,39 +1,54 @@
 import 'package:flutter/material.dart';
-import '../ragisterscreen/ragisterscreen.dart';
 
-class Loginscreen extends StatefulWidget {
-  Loginscreen({super.key});
+class Registerscreen extends StatefulWidget {
+  Registerscreen({super.key});
 
   @override
-  State<Loginscreen> createState() => _LoginscreenState();
+  State<Registerscreen> createState() => _RegisterscreenState();
 }
 
-class _LoginscreenState extends State<Loginscreen> {
+class _RegisterscreenState extends State<Registerscreen> {
   bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
   bool _isLoading = false;
 
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
+  String? _nameError;
   String? _emailError;
   String? _passwordError;
+  String? _confirmPasswordError;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
   bool _validate() {
     setState(() {
+      _nameError = null;
       _emailError = null;
       _passwordError = null;
+      _confirmPasswordError = null;
     });
 
     bool isValid = true;
+    final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
+    if (name.isEmpty) {
+      setState(() => _nameError = "Full name is required");
+      isValid = false;
+    }
 
     if (email.isEmpty) {
       setState(() => _emailError = "Email is required");
@@ -51,10 +66,18 @@ class _LoginscreenState extends State<Loginscreen> {
       isValid = false;
     }
 
+    if (confirmPassword.isEmpty) {
+      setState(() => _confirmPasswordError = "Please confirm your password");
+      isValid = false;
+    } else if (confirmPassword != password) {
+      setState(() => _confirmPasswordError = "Passwords do not match");
+      isValid = false;
+    }
+
     return isValid;
   }
 
-  void _handleLogin() {
+  void _handleRegister() {
     if (_validate()) {
       setState(() {
         _isLoading = true;
@@ -67,11 +90,13 @@ class _LoginscreenState extends State<Loginscreen> {
           });
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Login Successful!'),
+              content: Text('Registration Successful!'),
               behavior: SnackBarBehavior.floating,
               backgroundColor: Colors.green,
             ),
           );
+          // Navigate back to login or home
+          Navigator.pop(context);
         }
       });
     }
@@ -94,8 +119,8 @@ class _LoginscreenState extends State<Loginscreen> {
           padding: EdgeInsets.symmetric(horizontal: 30.0),
           child: Column(
             children: [
-              SizedBox(height: 100),
-              // Beautiful Logo/Icon Area
+              SizedBox(height: 80),
+              // Logo Area
               Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -110,14 +135,14 @@ class _LoginscreenState extends State<Loginscreen> {
                   ],
                 ),
                 child: Icon(
-                  Icons.rocket_launch_rounded,
+                  Icons.person_add_rounded,
                   size: 60,
                   color: Colors.orange,
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 30),
               Text(
-                "Welcome Back",
+                "Create Account",
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w800,
@@ -127,14 +152,25 @@ class _LoginscreenState extends State<Loginscreen> {
               ),
               SizedBox(height: 10),
               Text(
-                "Login to continue your journey",
+                "Join us to start your journey",
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey.shade600,
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              SizedBox(height: 50),
+              SizedBox(height: 40),
+
+              // Name Field
+              _buildTextField(
+                controller: _nameController,
+                label: "Full Name",
+                hint: "John Doe",
+                icon: Icons.person_outline_rounded,
+                errorText: _nameError,
+              ),
+
+              SizedBox(height: 20),
 
               // Email Field
               _buildTextField(
@@ -162,29 +198,30 @@ class _LoginscreenState extends State<Loginscreen> {
                 },
               ),
 
-              SizedBox(height: 12),
+              SizedBox(height: 20),
 
-              // Forgot Password
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {},
-                  style: TextButton.styleFrom(foregroundColor: Colors.orange),
-                  child: Text(
-                    "Forgot Password?",
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
+              // Confirm Password Field
+              _buildTextField(
+                controller: _confirmPasswordController,
+                label: "Confirm Password",
+                hint: "••••••••",
+                icon: Icons.lock_reset_rounded,
+                errorText: _confirmPasswordError,
+                isPassword: true,
+                obscureText: !_isConfirmPasswordVisible,
+                onToggleVisibility: () {
+                  setState(() => _isConfirmPasswordVisible = !_isConfirmPasswordVisible);
+                },
               ),
 
-              SizedBox(height: 30),
+              SizedBox(height: 40),
 
-              // Login Button
+              // Register Button
               SizedBox(
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _handleLogin,
+                  onPressed: _isLoading ? null : _handleRegister,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                     foregroundColor: Colors.white,
@@ -204,7 +241,7 @@ class _LoginscreenState extends State<Loginscreen> {
                           ),
                         )
                       : Text(
-                          "Login",
+                          "Sign Up",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -213,27 +250,22 @@ class _LoginscreenState extends State<Loginscreen> {
                 ),
               ),
 
-              SizedBox(height: 40),
+              SizedBox(height: 30),
 
-              // Sign Up
+              // Login Link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "New here? ",
+                    "Already have an account? ",
                     style: TextStyle(color: Colors.grey.shade700),
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Registerscreen(),
-                        ),
-                      );
+                      Navigator.pop(context);
                     },
                     child: Text(
-                      "Create Account",
+                      "Login",
                       style: TextStyle(
                         color: Colors.orange,
                         fontWeight: FontWeight.bold,
