@@ -142,7 +142,7 @@ class LoginscreenState extends State<Loginscreen> {
                 controller: emailController,
                 label: "Email Address",
                 hint: "Enter Your Email",
-                icon: Icons.alternate_email_rounded,
+                icon: Icons.email,
                 errorText: emailError,
                 keyboardType: TextInputType.emailAddress,
               ),
