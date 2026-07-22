@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../ragisterscreen/ragisterscreen.dart';
 
 class Loginscreen extends StatefulWidget {
@@ -140,7 +141,7 @@ class LoginscreenState extends State<Loginscreen> {
               buildTextField(
                 controller: emailController,
                 label: "Email Address",
-                hint: "example@mail.com",
+                hint: "Enter Your Email",
                 icon: Icons.alternate_email_rounded,
                 errorText: emailError,
                 keyboardType: TextInputType.emailAddress,
@@ -152,7 +153,7 @@ class LoginscreenState extends State<Loginscreen> {
               buildTextField(
                 controller: passwordController,
                 label: "Password",
-                hint: "••••••••",
+                hint: "Enter Your Password",
                 icon: Icons.lock_outline_rounded,
                 errorText: passwordError,
                 isPassword: true,
