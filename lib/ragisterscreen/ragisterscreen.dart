@@ -165,7 +165,7 @@ class _RegisterscreenState extends State<Registerscreen> {
               _buildTextField(
                 controller: _nameController,
                 label: "Full Name",
-                hint: "John Doe",
+                hint: "Enter your Full Name",
                 icon: Icons.person_outline_rounded,
                 errorText: _nameError,
               ),
@@ -176,7 +176,7 @@ class _RegisterscreenState extends State<Registerscreen> {
               _buildTextField(
                 controller: _emailController,
                 label: "Email Address",
-                hint: "example@mail.com",
+                hint: "Enter your Email",
                 icon: Icons.alternate_email_rounded,
                 errorText: _emailError,
                 keyboardType: TextInputType.emailAddress,
@@ -188,7 +188,7 @@ class _RegisterscreenState extends State<Registerscreen> {
               _buildTextField(
                 controller: _passwordController,
                 label: "Password",
-                hint: "••••••••",
+                hint: "Enter your Password",
                 icon: Icons.lock_outline_rounded,
                 errorText: _passwordError,
                 isPassword: true,
@@ -204,7 +204,7 @@ class _RegisterscreenState extends State<Registerscreen> {
               _buildTextField(
                 controller: _confirmPasswordController,
                 label: "Confirm Password",
-                hint: "••••••••",
+                hint: "Enter your Confirm Password",
                 icon: Icons.lock_reset_rounded,
                 errorText: _confirmPasswordError,
                 isPassword: true,
