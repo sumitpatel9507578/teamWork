@@ -1,77 +1,102 @@
 import 'package:flutter/material.dart';
-import '../ragisterscreen/ragisterscreen.dart';
 
-class Loginscreen extends StatefulWidget {
-  Loginscreen({super.key});
+class Registerscreen extends StatefulWidget {
+  Registerscreen({super.key});
 
   @override
-  State<Loginscreen> createState() => LoginscreenState();
+  State<Registerscreen> createState() => _RegisterscreenState();
 }
 
-class LoginscreenState extends State<Loginscreen> {
-  bool isPasswordVisible = false;
-  bool isLoading = false;
+class _RegisterscreenState extends State<Registerscreen> {
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
+  bool _isLoading = false;
 
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
-  String? emailError;
-  String? passwordError;
+  String? _nameError;
+  String? _emailError;
+  String? _passwordError;
+  String? _confirmPasswordError;
 
   @override
   void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  bool validate() {
+  bool _validate() {
     setState(() {
-      emailError = null;
-      passwordError = null;
+      _nameError = null;
+      _emailError = null;
+      _passwordError = null;
+      _confirmPasswordError = null;
     });
 
     bool isValid = true;
-    final email = emailController.text.trim();
-    final password = passwordController.text;
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
+    if (name.isEmpty) {
+      setState(() => _nameError = "Full name is required");
+      isValid = false;
+    }
 
     if (email.isEmpty) {
-      setState(() => emailError = "Email is required");
+      setState(() => _emailError = "Email is required");
       isValid = false;
     } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-      setState(() => emailError = "Enter a valid email address");
+      setState(() => _emailError = "Enter a valid email address");
       isValid = false;
     }
 
     if (password.isEmpty) {
-      setState(() => passwordError = "Password is required");
+      setState(() => _passwordError = "Password is required");
       isValid = false;
     } else if (password.length < 6) {
-      setState(() => passwordError = "Password must be at least 6 characters");
+      setState(() => _passwordError = "Password must be at least 6 characters");
+      isValid = false;
+    }
+
+    if (confirmPassword.isEmpty) {
+      setState(() => _confirmPasswordError = "Please confirm your password");
+      isValid = false;
+    } else if (confirmPassword != password) {
+      setState(() => _confirmPasswordError = "Passwords do not match");
       isValid = false;
     }
 
     return isValid;
   }
 
-  void handleLogin() {
-    if (validate()) {
+  void _handleRegister() {
+    if (_validate()) {
       setState(() {
-        isLoading = true;
+        _isLoading = true;
       });
       // Simulate API call
       Future.delayed(Duration(seconds: 2), () {
         if (mounted) {
           setState(() {
-            isLoading = false;
+            _isLoading = false;
           });
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Login Successful!'),
+              content: Text('Registration Successful!'),
               behavior: SnackBarBehavior.floating,
               backgroundColor: Colors.green,
             ),
           );
+          // Navigate back to login or home
+          Navigator.pop(context);
         }
       });
     }
@@ -94,8 +119,8 @@ class LoginscreenState extends State<Loginscreen> {
           padding: EdgeInsets.symmetric(horizontal: 30.0),
           child: Column(
             children: [
-              SizedBox(height: 100),
-              // Beautiful Logo/Icon Area
+              SizedBox(height: 80),
+              // Logo Area
               Container(
                 padding: EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -110,14 +135,14 @@ class LoginscreenState extends State<Loginscreen> {
                   ],
                 ),
                 child: Icon(
-                  Icons.rocket_launch_rounded,
+                  Icons.person_add_rounded,
                   size: 60,
                   color: Colors.orange,
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 30),
               Text(
-                "Welcome Back",
+                "Create Account",
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w800,
@@ -127,64 +152,76 @@ class LoginscreenState extends State<Loginscreen> {
               ),
               SizedBox(height: 10),
               Text(
-                "Login to continue your journey",
+                "Join us to start your journey",
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey.shade600,
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              SizedBox(height: 50),
+              SizedBox(height: 40),
+
+              // Name Field
+              _buildTextField(
+                controller: _nameController,
+                label: "Full Name",
+                hint: "John Doe",
+                icon: Icons.person_outline_rounded,
+                errorText: _nameError,
+              ),
+
+              SizedBox(height: 20),
 
               // Email Field
-              buildTextField(
-                controller: emailController,
+              _buildTextField(
+                controller: _emailController,
                 label: "Email Address",
                 hint: "example@mail.com",
                 icon: Icons.alternate_email_rounded,
-                errorText: emailError,
+                errorText: _emailError,
                 keyboardType: TextInputType.emailAddress,
               ),
 
               SizedBox(height: 20),
 
               // Password Field
-              buildTextField(
-                controller: passwordController,
+              _buildTextField(
+                controller: _passwordController,
                 label: "Password",
                 hint: "••••••••",
                 icon: Icons.lock_outline_rounded,
-                errorText: passwordError,
+                errorText: _passwordError,
                 isPassword: true,
-                obscureText: !isPasswordVisible,
+                obscureText: !_isPasswordVisible,
                 onToggleVisibility: () {
-                  setState(() => isPasswordVisible = !isPasswordVisible);
+                  setState(() => _isPasswordVisible = !_isPasswordVisible);
                 },
               ),
 
-              SizedBox(height: 12),
+              SizedBox(height: 20),
 
-              // Forgot Password
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {},
-                  style: TextButton.styleFrom(foregroundColor: Colors.orange),
-                  child: Text(
-                    "Forgot Password?",
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
+              // Confirm Password Field
+              _buildTextField(
+                controller: _confirmPasswordController,
+                label: "Confirm Password",
+                hint: "••••••••",
+                icon: Icons.lock_reset_rounded,
+                errorText: _confirmPasswordError,
+                isPassword: true,
+                obscureText: !_isConfirmPasswordVisible,
+                onToggleVisibility: () {
+                  setState(() => _isConfirmPasswordVisible = !_isConfirmPasswordVisible);
+                },
               ),
 
-              SizedBox(height: 30),
+              SizedBox(height: 40),
 
-              // Login Button
+              // Register Button
               SizedBox(
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: isLoading ? null : handleLogin,
+                  onPressed: _isLoading ? null : _handleRegister,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                     foregroundColor: Colors.white,
@@ -194,7 +231,7 @@ class LoginscreenState extends State<Loginscreen> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: isLoading
+                  child: _isLoading
                       ? SizedBox(
                           height: 24,
                           width: 24,
@@ -204,7 +241,7 @@ class LoginscreenState extends State<Loginscreen> {
                           ),
                         )
                       : Text(
-                          "Login",
+                          "Sign Up",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -213,27 +250,22 @@ class LoginscreenState extends State<Loginscreen> {
                 ),
               ),
 
-              SizedBox(height: 40),
+              SizedBox(height: 30),
 
-              // Sign Up
+              // Login Link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "New here? ",
+                    "Already have an account? ",
                     style: TextStyle(color: Colors.grey.shade700),
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Registerscreen(),
-                        ),
-                      );
+                      Navigator.pop(context);
                     },
                     child: Text(
-                      "Create Account",
+                      "Login",
                       style: TextStyle(
                         color: Colors.orange,
                         fontWeight: FontWeight.bold,
@@ -250,7 +282,7 @@ class LoginscreenState extends State<Loginscreen> {
     );
   }
 
-  Widget buildTextField({
+  Widget _buildTextField({
     required TextEditingController controller,
     required String label,
     required String hint,
