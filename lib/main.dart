@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'LoginScreen/LoginScreen.dart';
+
+import 'SplashScreen/SplashScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
         ),
       ),
-      home: Loginscreen(),
+      home: Splashscreen(),
     );
   }
 }

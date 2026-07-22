@@ -4,65 +4,65 @@ class Loginscreen extends StatefulWidget {
   Loginscreen({super.key});
 
   @override
-  State<Loginscreen> createState() => _LoginscreenState();
+  State<Loginscreen> createState() => LoginscreenState();
 }
 
-class _LoginscreenState extends State<Loginscreen> {
-  bool _isPasswordVisible = false;
-  bool _isLoading = false;
+class LoginscreenState extends State<Loginscreen> {
+  bool isPasswordVisible = false;
+  bool isLoading = false;
 
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
-  String? _emailError;
-  String? _passwordError;
+  String? emailError;
+  String? passwordError;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 
-  bool _validate() {
+  bool validate() {
     setState(() {
-      _emailError = null;
-      _passwordError = null;
+      emailError = null;
+      passwordError = null;
     });
 
     bool isValid = true;
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
+    final email = emailController.text.trim();
+    final password = passwordController.text;
 
     if (email.isEmpty) {
-      setState(() => _emailError = "Email is required");
+      setState(() => emailError = "Email is required");
       isValid = false;
     } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-      setState(() => _emailError = "Enter a valid email address");
+      setState(() => emailError = "Enter a valid email address");
       isValid = false;
     }
 
     if (password.isEmpty) {
-      setState(() => _passwordError = "Password is required");
+      setState(() => passwordError = "Password is required");
       isValid = false;
     } else if (password.length < 6) {
-      setState(() => _passwordError = "Password must be at least 6 characters");
+      setState(() => passwordError = "Password must be at least 6 characters");
       isValid = false;
     }
 
     return isValid;
   }
 
-  void _handleLogin() {
-    if (_validate()) {
+  void handleLogin() {
+    if (validate()) {
       setState(() {
-        _isLoading = true;
+        isLoading = true;
       });
       // Simulate API call
       Future.delayed(Duration(seconds: 2), () {
         if (mounted) {
           setState(() {
-            _isLoading = false;
+            isLoading = false;
           });
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -136,29 +136,117 @@ class _LoginscreenState extends State<Loginscreen> {
               SizedBox(height: 50),
 
               // Email Field
-              _buildTextField(
-                controller: _emailController,
-                label: "Email Address",
-                hint: "example@mail.com",
-                icon: Icons.alternate_email_rounded,
-                errorText: _emailError,
+              TextField(
+                controller: emailController,
                 keyboardType: TextInputType.emailAddress,
+                style: TextStyle(fontWeight: FontWeight.w500),
+                decoration: InputDecoration(
+                  labelText: "Email Address",
+                  labelStyle: TextStyle(
+                    color: Colors.grey.shade700,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  hintText: "example@mail.com",
+                  hintStyle: TextStyle(
+                    color: Colors.grey.shade400,
+                    fontSize: 15,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.alternate_email_rounded,
+                    color: Colors.orange,
+                    size: 22,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  errorText: emailError,
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 18,
+                    horizontal: 20,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade200,
+                      width: 2,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: Colors.orange, width: 2),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: Colors.redAccent, width: 1),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: Colors.redAccent, width: 2),
+                  ),
+                ),
               ),
 
               SizedBox(height: 20),
 
               // Password Field
-              _buildTextField(
-                controller: _passwordController,
-                label: "Password",
-                hint: "••••••••",
-                icon: Icons.lock_outline_rounded,
-                errorText: _passwordError,
-                isPassword: true,
-                obscureText: !_isPasswordVisible,
-                onToggleVisibility: () {
-                  setState(() => _isPasswordVisible = !_isPasswordVisible);
-                },
+              TextField(
+                controller: passwordController,
+                obscureText: !isPasswordVisible,
+                style: TextStyle(fontWeight: FontWeight.w500),
+                decoration: InputDecoration(
+                  labelText: "Password",
+                  labelStyle: TextStyle(
+                    color: Colors.grey.shade700,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  hintText: "••••••••",
+                  hintStyle: TextStyle(
+                    color: Colors.grey.shade400,
+                    fontSize: 15,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.lock_outline_rounded,
+                    color: Colors.orange,
+                    size: 22,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      !isPasswordVisible
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: Colors.grey,
+                      size: 20,
+                    ),
+                    onPressed: () {
+                      setState(() => isPasswordVisible = !isPasswordVisible);
+                    },
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  errorText: passwordError,
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 18,
+                    horizontal: 20,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade200,
+                      width: 2,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: Colors.orange, width: 2),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: Colors.redAccent, width: 1),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(color: Colors.redAccent, width: 2),
+                  ),
+                ),
               ),
 
               SizedBox(height: 12),
@@ -183,7 +271,7 @@ class _LoginscreenState extends State<Loginscreen> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: _isLoading ? null : _handleLogin,
+                  onPressed: isLoading ? null : handleLogin,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                     foregroundColor: Colors.white,
@@ -193,7 +281,7 @@ class _LoginscreenState extends State<Loginscreen> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: _isLoading
+                  child: isLoading
                       ? SizedBox(
                           height: 24,
                           width: 24,
@@ -242,7 +330,7 @@ class _LoginscreenState extends State<Loginscreen> {
     );
   }
 
-  Widget _buildTextField({
+  Widget buildTextField({
     required TextEditingController controller,
     required String label,
     required String hint,
