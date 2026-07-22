@@ -35,7 +35,7 @@ class SplashscreenState extends State<Splashscreen>
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Loginscreen()),
+          MaterialPageRoute(builder: (context) => LoginScreen()),
         );
       }
     });
